@@ -6,9 +6,11 @@ The module creates two IAM roles:
 It also can assume the `ih-tf-{var.repo_name}-admin` role.
 
 In the Terraform CI/CD context in GitHub Actions it's optimal to work with two roles.
-One role is a `*-github` role. A GitHub Actions worker assume this role. The role allows
-to upload/download/delete a Terraform Plan file. The `*-github` role also assume the `*-admin` role
-that is used by Terraform for the `plan` and `apply` stages.
+One role is a `*-github` role. A GitHub Actions worker assume this role. 
+The role allows to upload/download/delete a Terraform Plan file. 
+
+The `*-github` role also assumes the `*-admin` role that is used by Terraform for the `plan` and `apply` stages.
+
 It's up to a module user to decide what the `*-admin` role can do.
 By default, it will have the `AdministratorAccess` policy attached, but you might want to pass a limited
 policy accordingly to your security practices.
@@ -28,8 +30,8 @@ module "github-connector" {
 Now create the roles for GitHub Actions.
 ```hcl
 module "ih-tf-aws-control-493370826424-admin" {
-  source = "infrahouse/gha-admin/aws"
-  version = "~> 1.0"
+  source                   = "infrahouse/gha-admin/aws"
+  version                  = "~> 1.0"
   gh_identity_provider_arn = module.github-connector.gh_openid_connect_provider_arn
   gh_org_name              = "infrahouse"
   repo_name                = "aws-control-493370826424"
