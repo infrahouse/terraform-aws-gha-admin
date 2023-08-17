@@ -17,30 +17,6 @@ data "aws_iam_policy_document" "admin-assume" {
       )
     }
   }
-  statement {
-    sid     = "010"
-    actions = ["sts:AssumeRoleWithWebIdentity"]
-    principals {
-      type = "Federated"
-      identifiers = [
-        var.gh_identity_provider_arn
-      ]
-    }
-    condition {
-      test     = "StringEquals"
-      variable = "token.actions.githubusercontent.com:aud"
-      values = [
-        "sts.amazonaws.com"
-      ]
-    }
-    condition {
-      test     = "StringLike"
-      variable = "token.actions.githubusercontent.com:sub"
-      values = [
-        "repo:${var.gh_org_name}/${var.repo_name}:*"
-      ]
-    }
-  }
 }
 
 data "aws_iam_policy_document" "github-assume" {
