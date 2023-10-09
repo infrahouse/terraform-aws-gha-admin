@@ -22,8 +22,3 @@ variable "gh_org_name" {
 variable "repo_name" {
   description = "Repository name in GitHub. Without the organization part."
 }
-
-variable "state_bucket" {
-  description = "Name of the S3 bucket with the state."
-}
-
