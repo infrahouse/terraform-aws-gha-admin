@@ -1,11 +1,19 @@
 ## Data Sources
+locals {
+  gha_hostname = "token.actions.githubusercontent.com"
+}
+
+data "aws_iam_openid_connect_provider" "github" {
+  provider = aws.cicd
+  url      = "https://${local.gha_hostname}"
+}
+
 data "aws_iam_policy" "admin" {
   name = var.admin_policy_name
 }
 
-data "aws_iam_policy_document" "admin-assume" {
+data "aws_iam_policy_document" "admin-trust" {
   statement {
-    sid     = "000"
     actions = ["sts:AssumeRole"]
     principals {
       type = "AWS"
@@ -19,26 +27,25 @@ data "aws_iam_policy_document" "admin-assume" {
   }
 }
 
-data "aws_iam_policy_document" "github-assume" {
+data "aws_iam_policy_document" "github-trust" {
   statement {
-    sid     = "010"
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
       type = "Federated"
       identifiers = [
-        var.gh_identity_provider_arn
+        data.aws_iam_openid_connect_provider.github.arn
       ]
     }
     condition {
       test     = "StringEquals"
-      variable = "token.actions.githubusercontent.com:aud"
+      variable = "${local.gha_hostname}:aud"
       values = [
         "sts.amazonaws.com"
       ]
     }
     condition {
       test     = "StringLike"
-      variable = "token.actions.githubusercontent.com:sub"
+      variable = "${local.gha_hostname}:sub"
       values = [
         "repo:${var.gh_org_name}/${var.repo_name}:*"
       ]
@@ -51,14 +58,8 @@ data "aws_iam_policy_document" "github-permissions" {
     actions = [
       "sts:AssumeRole"
     ]
-    resources = ["*"]
-  }
-  statement {
-    actions = [
-      "s3:*"
-    ]
     resources = [
-      "arn:aws:s3:::${var.state_bucket}/*"
+      aws_iam_role.admin.arn
     ]
   }
 }
