@@ -4,7 +4,7 @@
 
 There are three IAM roles in the multi-account environment used by the CI/CD system.  
 
-![IAM Roles for Terraform CI/CD](assets/IAM_Roles_for_Terraform_CI_CD.png)
+![IAM Roles for Terraform CI/CD](https://raw.githubusercontent.com/infrahouse/terraform-aws-gha-admin/main/assets/IAM_Roles_for_Terraform_CI_CD.png)
 
 ## AWS accounts
 
