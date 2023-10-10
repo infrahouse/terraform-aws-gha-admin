@@ -1,4 +1,13 @@
 ## Data Sources
+locals {
+  gha_hostname = "token.actions.githubusercontent.com"
+}
+
+data "aws_iam_openid_connect_provider" "github" {
+  provider = aws.cicd
+  url      = "https://${local.gha_hostname}"
+}
+
 data "aws_iam_policy" "admin" {
   name = var.admin_policy_name
 }
@@ -24,19 +33,19 @@ data "aws_iam_policy_document" "github-trust" {
     principals {
       type = "Federated"
       identifiers = [
-        var.gh_identity_provider_arn
+        data.aws_iam_openid_connect_provider.github.arn
       ]
     }
     condition {
       test     = "StringEquals"
-      variable = "token.actions.githubusercontent.com:aud"
+      variable = "${local.gha_hostname}:aud"
       values = [
         "sts.amazonaws.com"
       ]
     }
     condition {
       test     = "StringLike"
-      variable = "token.actions.githubusercontent.com:sub"
+      variable = "${local.gha_hostname}:sub"
       values = [
         "repo:${var.gh_org_name}/${var.repo_name}:*"
       ]
