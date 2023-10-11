@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "admin-trust" {
         [
           aws_iam_role.github.arn
         ],
-        var.admin_allowed_arns
+        var.trusted_arns
       )
     }
   }
