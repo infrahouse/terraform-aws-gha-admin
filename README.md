@@ -86,7 +86,7 @@ module "gha" {
     aws.tfstates = aws.your-tf-states-provider
   }
   source                    = "infrahouse/gha-admin/aws"
-  version                   = "~> 2.0"
+  version                   = "~> 3.0"
   gh_org_name               = "infrahouse"
   repo_name                 = "aws-control-493370826424"
   state_bucket              = "infrahouse-aws-control-493370826424"
@@ -139,12 +139,12 @@ in `state_bucket` which is `s3://infrahouse-aws-control-493370826424`.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_admin_allowed_arns"></a> [admin\_allowed\_arns](#input\_admin\_allowed\_arns) | A list of ARNs besides `ih-tf-{var.repo_name}-github` that are allowed to assume the `ih-tf-{var.repo_name}-admin` role. | `list(string)` | `[]` | no |
 | <a name="input_admin_policy_name"></a> [admin\_policy\_name](#input\_admin\_policy\_name) | Name of the IAM policy the `ih-tf-{var.repo_name}-admin` role will have. This is what the role can do. | `string` | `"AdministratorAccess"` | no |
 | <a name="input_gh_org_name"></a> [gh\_org\_name](#input\_gh\_org\_name) | GitHub organization name. | `string` | n/a | yes |
 | <a name="input_repo_name"></a> [repo\_name](#input\_repo\_name) | Repository name in GitHub. Without the organization part. | `any` | n/a | yes |
 | <a name="input_state_bucket"></a> [state\_bucket](#input\_state\_bucket) | Name of the S3 bucket with the state | `any` | n/a | yes |
 | <a name="input_terraform_locks_table_arn"></a> [terraform\_locks\_table\_arn](#input\_terraform\_locks\_table\_arn) | DynamoDB table that holds Terraform state locks. | `any` | n/a | yes |
+| <a name="input_trusted_arns"></a> [trusted\_arns](#input\_trusted\_arns) | A list of ARNs besides `ih-tf-{var.repo_name}-github` that are allowed to assume the `ih-tf-{var.repo_name}-admin` and `ih-tf-{var.repo_name}-state-manager` role. | `list(string)` | `[]` | no |
 
 ## Outputs
 
@@ -152,3 +152,4 @@ in `state_bucket` which is `s3://infrahouse-aws-control-493370826424`.
 |------|-------------|
 | <a name="output_admin_role_arn"></a> [admin\_role\_arn](#output\_admin\_role\_arn) | ARN of the `ih-tf-{var.repo_name}-admin` role |
 | <a name="output_github_role_arn"></a> [github\_role\_arn](#output\_github\_role\_arn) | ARN of the `ih-tf-{var.repo_name}-github` role |
+| <a name="output_state_manager_role_arn"></a> [state\_manager\_role\_arn](#output\_state\_manager\_role\_arn) | ARN of the `ih-tf-{var.repo_name}-state-manager` role |
