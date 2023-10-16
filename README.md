@@ -45,38 +45,29 @@ module "github-connector" {
 }
 ```
 
-A Terraform state bucket. You can use any module that would create a states bucket. 
-The recommended bucket configuration is described in https://blog.gruntwork.io/how-to-manage-terraform-state-28f5697e68fa
+A Terraform state bucket. You can use
+ the [state-bucket](https://registry.terraform.io/modules/infrahouse/state-bucket/aws/latest) module.
 
-For sake of example, here's a snippet, but don't use it in production. 
+The module will create the S3 state bucket and DynamoDB table for the state lock
+ following recommendations outlined by
+ [Hashicorp](https://developer.hashicorp.com/terraform/language/settings/backends/s3)
+ and [Gruntwork](https://blog.gruntwork.io/how-to-manage-terraform-state-28f5697e68fa).
+
 ```hcl
-resource "aws_s3_bucket" "pytest" {
-  bucket_prefix = "pytest-gha-"
-}
-```
-
-Finally, a DynamoDB table. It's used for the Terraform state locks. The state locks are optional 
-and not required by Terraform itslef. The gha-admin module though requires it.
-```hcl
-resource "random_pet" "dynamo" {
-  prefix = "pytest-gha-"
-}
-
-resource "aws_dynamodb_table" "terraform_locks" {
-  name         = random_pet.dynamo.id
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
-  attribute {
-    name = "LockID"
-    type = "S"
+module "state-bucket" {
+  source  = "infrahouse/state-bucket/aws"
+  version = "~> 2.0"
+  providers = {
+    aws = aws.tf-states
   }
+  bucket = "infrahouse-aws-control-493370826424"
 }
 ```
 
 ### gha-admin module
 
-Now create the roles for GitHub Actions. Note that module requires three providers. 
-Each of them is supposed to describe different AWS accounts.   
+Now, create the roles for GitHub Actions. Note that module requires three providers.
+ Each of them is supposed to describe different AWS accounts.
 
 ```hcl
 module "gha" {
@@ -86,15 +77,14 @@ module "gha" {
     aws.tfstates = aws.your-tf-states-provider
   }
   source                    = "infrahouse/gha-admin/aws"
-  version                   = "~> 3.0"
+  version                   = "~> 3.1"
   gh_org_name               = "infrahouse"
   repo_name                 = "aws-control-493370826424"
-  state_bucket              = "infrahouse-aws-control-493370826424"
-  terraform_locks_table_arn = aws_dynamodb_table.terraform_locks.arn
-
+  state_bucket              = module.state-bucket.bucket_name
+  terraform_locks_table_arn = module.state-bucket.lock_table_arn
 }
 ```
-* 
+
 * `gh_org_name` is `infrahouse` as in https://github.com/infrahouse.
 * `repo_name` is `aws-control-493370826424` as in https://github.com/infrahouse/aws-control-493370826424.
 * `gha` is a Terraform root module, so it creates actual resources and stores a Terraform state
