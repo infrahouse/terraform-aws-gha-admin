@@ -21,7 +21,8 @@ The module creates three IAM roles:
 * `ih-tf-{var.repo_name}-state-manager` - the role can upload/download a Terraform state. 
   The role is created in the "TF states" account by 
   the [state-manager](https://registry.terraform.io/modules/infrahouse/state-manager/aws/latest) module.
-* `ih-tf-{var.repo_name}-github` - the role can only assume the `ih-tf-{var.repo_name}-admin` role. The role is
+* `ih-tf-{var.repo_name}-github` - the role can only assume the `ih-tf-{var.repo_name}-admin`,
+  `ih-tf-{var.repo_name}-state-manager`, and `var.allowed_arns` role.
   The role is created in the CD/CD account.
 
 It's up to a module user to decide what the `*-admin` role can do.
@@ -130,6 +131,7 @@ in `state_bucket` which is `s3://infrahouse-aws-control-493370826424`.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_admin_policy_name"></a> [admin\_policy\_name](#input\_admin\_policy\_name) | Name of the IAM policy the `ih-tf-{var.repo_name}-admin` role will have. This is what the role can do. | `string` | `"AdministratorAccess"` | no |
+| <a name="input_allowed_arns"></a> [allowed\_arns](#input\_allowed\_arns) | A list of ARNs `ih-tf-{var.repo_name}-github` is allowed to assume besides `ih-tf-{var.repo_name}-admin` and `ih-tf-{var.repo_name}-state-manager` roles. | `list(string)` | `[]` | no |
 | <a name="input_gh_org_name"></a> [gh\_org\_name](#input\_gh\_org\_name) | GitHub organization name. | `string` | n/a | yes |
 | <a name="input_repo_name"></a> [repo\_name](#input\_repo\_name) | Repository name in GitHub. Without the organization part. | `any` | n/a | yes |
 | <a name="input_state_bucket"></a> [state\_bucket](#input\_state\_bucket) | Name of the S3 bucket with the state | `any` | n/a | yes |

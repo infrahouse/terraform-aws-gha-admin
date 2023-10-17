@@ -58,9 +58,12 @@ data "aws_iam_policy_document" "github-permissions" {
     actions = [
       "sts:AssumeRole"
     ]
-    resources = [
-      aws_iam_role.admin.arn,
-      module.state-manager.state_manager_role_arn
-    ]
+    resources = concat(
+      [
+        aws_iam_role.admin.arn,
+        module.state-manager.state_manager_role_arn
+      ],
+      var.allowed_arns
+    )
   }
 }
