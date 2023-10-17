@@ -1,3 +1,9 @@
+variable "allowed_arns" {
+  description = "A list of ARNs `ih-tf-{var.repo_name}-github` is allowed to assume besides `ih-tf-{var.repo_name}-admin` and `ih-tf-{var.repo_name}-state-manager` roles."
+  type        = list(string)
+  default     = []
+}
+
 variable "admin_policy_name" {
   description = "Name of the IAM policy the `ih-tf-{var.repo_name}-admin` role will have. This is what the role can do."
   type        = string
