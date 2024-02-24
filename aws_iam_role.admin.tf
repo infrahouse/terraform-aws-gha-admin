@@ -2,6 +2,7 @@ resource "aws_iam_role" "admin" {
   name               = "ih-tf-${var.repo_name}-admin"
   description        = "Role to manage AWS account"
   assume_role_policy = data.aws_iam_policy_document.admin-trust.json
+  tags               = local.tags
 }
 
 resource "aws_iam_role_policy_attachment" "admin" {
