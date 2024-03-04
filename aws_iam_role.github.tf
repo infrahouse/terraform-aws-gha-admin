@@ -11,3 +11,10 @@ resource "aws_iam_role_policy_attachment" "github" {
   policy_arn = aws_iam_policy.github.arn
   role       = aws_iam_role.github.name
 }
+
+resource "aws_iam_role_policy_attachment" "github-assume-all" {
+  provider   = aws.cicd
+  count      = var.allow_assume_all_roles ? 1 : 0
+  policy_arn = aws_iam_policy.github-assume-all.arn
+  role       = aws_iam_role.github.name
+}

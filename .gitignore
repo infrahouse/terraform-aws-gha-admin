@@ -1,8 +1,8 @@
 /.idea/
 .terraform
-/test_data/gha-admin/.terraform.lock.hcl
-/test_data/gha-admin/terraform.tfstate
-/test_data/gha-admin/terraform.tfstate.backup
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
 /.pytest_cache/
 __pycache__
 /tf-apply-trace.txt
