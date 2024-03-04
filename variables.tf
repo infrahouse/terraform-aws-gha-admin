@@ -4,6 +4,12 @@ variable "allowed_arns" {
   default     = []
 }
 
+variable "allow_assume_all_roles" {
+  description = "If true the -github role may assume all possible roles."
+  type        = bool
+  default     = false
+}
+
 variable "admin_policy_name" {
   description = "Name of the IAM policy the `ih-tf-{var.repo_name}-admin` role will have. This is what the role can do."
   type        = string

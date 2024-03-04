@@ -67,3 +67,12 @@ data "aws_iam_policy_document" "github-permissions" {
     )
   }
 }
+
+data "aws_iam_policy_document" "github-permissions-assume-all" {
+  statement {
+    actions = [
+      "sts:AssumeRole"
+    ]
+    resources = ["*"]
+  }
+}

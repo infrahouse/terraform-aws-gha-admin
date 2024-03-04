@@ -41,7 +41,7 @@ must be created in the CI/CD account, where the "*-github" role is.
 
 ```hcl
 module "github-connector" {
-  source  = "infrahouse/gh-identity-provider/aws"
+  source  = "registry.infrahouse.com/infrahouse/gh-identity-provider/aws"
   version = "~> 1.0"
 }
 ```
@@ -56,7 +56,7 @@ The module will create the S3 state bucket and DynamoDB table for the state lock
 
 ```hcl
 module "state-bucket" {
-  source  = "infrahouse/state-bucket/aws"
+  source  = "registry.infrahouse.com/infrahouse/state-bucket/aws"
   version = "~> 2.0"
   providers = {
     aws = aws.tf-states
@@ -77,8 +77,8 @@ module "gha" {
     aws.cicd     = aws.your-cicd-provider
     aws.tfstates = aws.your-tf-states-provider
   }
-  source                    = "infrahouse/gha-admin/aws"
-  version                   = "~> 3.1"
+  source                    = "registry.infrahouse.com/infrahouse/gha-admin/aws"
+  version                   = "~> 3.4"
   gh_org_name               = "infrahouse"
   repo_name                 = "aws-control-493370826424"
   state_bucket              = module.state-bucket.bucket_name
@@ -116,14 +116,17 @@ in `state_bucket` which is `s3://infrahouse-aws-control-493370826424`.
 | Name | Type |
 |------|------|
 | [aws_iam_policy.github](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.github-assume-all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_role.admin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.github](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy_attachment.admin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.github](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.github-assume-all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_openid_connect_provider.github](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_openid_connect_provider) | data source |
 | [aws_iam_policy.admin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy) | data source |
 | [aws_iam_policy_document.admin-trust](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.github-permissions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.github-permissions-assume-all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.github-trust](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
@@ -131,6 +134,7 @@ in `state_bucket` which is `s3://infrahouse-aws-control-493370826424`.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_admin_policy_name"></a> [admin\_policy\_name](#input\_admin\_policy\_name) | Name of the IAM policy the `ih-tf-{var.repo_name}-admin` role will have. This is what the role can do. | `string` | `"AdministratorAccess"` | no |
+| <a name="input_allow_assume_all_roles"></a> [allow\_assume\_all\_roles](#input\_allow\_assume\_all\_roles) | If true the -github role may assume all possible roles. | `bool` | `false` | no |
 | <a name="input_allowed_arns"></a> [allowed\_arns](#input\_allowed\_arns) | A list of ARNs `ih-tf-{var.repo_name}-github` is allowed to assume besides `ih-tf-{var.repo_name}-admin` and `ih-tf-{var.repo_name}-state-manager` roles. | `list(string)` | `[]` | no |
 | <a name="input_gh_org_name"></a> [gh\_org\_name](#input\_gh\_org\_name) | GitHub organization name. | `string` | n/a | yes |
 | <a name="input_repo_name"></a> [repo\_name](#input\_repo\_name) | Repository name in GitHub. Without the organization part. | `any` | n/a | yes |
