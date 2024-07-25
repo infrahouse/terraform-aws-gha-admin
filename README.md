@@ -90,7 +90,6 @@ module "gha" {
 * `repo_name` is `aws-control-493370826424` as in https://github.com/infrahouse/aws-control-493370826424.
 * `gha` is a Terraform root module, so it creates actual resources and stores a Terraform state
 in `state_bucket` which is `s3://infrahouse-aws-control-493370826424`.
-
 ## Requirements
 
 | Name | Version |
@@ -109,7 +108,7 @@ in `state_bucket` which is `s3://infrahouse-aws-control-493370826424`.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_state-manager"></a> [state-manager](#module\_state-manager) | infrahouse/state-manager/aws | ~> 0.1 |
+| <a name="module_state-manager"></a> [state-manager](#module\_state-manager) | infrahouse/state-manager/aws | 1.3.0 |
 
 ## Resources
 
@@ -137,6 +136,7 @@ in `state_bucket` which is `s3://infrahouse-aws-control-493370826424`.
 | <a name="input_allow_assume_all_roles"></a> [allow\_assume\_all\_roles](#input\_allow\_assume\_all\_roles) | If true the -github role may assume all possible roles. | `bool` | `false` | no |
 | <a name="input_allowed_arns"></a> [allowed\_arns](#input\_allowed\_arns) | A list of ARNs `ih-tf-{var.repo_name}-github` is allowed to assume besides `ih-tf-{var.repo_name}-admin` and `ih-tf-{var.repo_name}-state-manager` roles. | `list(string)` | `[]` | no |
 | <a name="input_gh_org_name"></a> [gh\_org\_name](#input\_gh\_org\_name) | GitHub organization name. | `string` | n/a | yes |
+| <a name="input_max_session_duration"></a> [max\_session\_duration](#input\_max\_session\_duration) | Maximum session duration (in seconds) that you want to set for the specified role. | `number` | `43200` | no |
 | <a name="input_repo_name"></a> [repo\_name](#input\_repo\_name) | Repository name in GitHub. Without the organization part. | `any` | n/a | yes |
 | <a name="input_state_bucket"></a> [state\_bucket](#input\_state\_bucket) | Name of the S3 bucket with the state | `any` | n/a | yes |
 | <a name="input_terraform_locks_table_arn"></a> [terraform\_locks\_table\_arn](#input\_terraform\_locks\_table\_arn) | DynamoDB table that holds Terraform state locks. | `any` | n/a | yes |

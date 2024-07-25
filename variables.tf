@@ -27,6 +27,12 @@ variable "gh_org_name" {
   type        = string
 }
 
+variable "max_session_duration" {
+  description = "Maximum session duration (in seconds) that you want to set for the specified role."
+  type        = number
+  default     = 12 * 3600
+}
+
 variable "repo_name" {
   description = "Repository name in GitHub. Without the organization part."
 }
