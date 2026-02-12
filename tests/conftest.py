@@ -1,12 +1,13 @@
 import logging
+import shutil
 from contextlib import contextmanager
-from os import path as osp
+from os import path as osp, remove
 
 import boto3
 import pytest
 from textwrap import dedent
 
-from infrahouse_toolkit.logging import setup_logging
+from infrahouse_core.logging import setup_logging
 
 # "303467602807" is our test account
 TEST_ACCOUNT = "303467602807"
@@ -48,12 +49,49 @@ def ec2_client_map(ec2_client, boto3_session):
     return ec2_map
 
 
+TERRAFORM_ROOT_DIR = osp.join(osp.dirname(__file__), "..", "test_data")
+
+
 def update_source(path, module_path):
     lines = open(path).readlines()
     with open(path, "w") as fp:
         for line in lines:
             line = line.replace("%SOURCE%", module_path)
             fp.write(line)
+
+
+def update_terraform_tf(terraform_module_dir, aws_provider_version):
+    terraform_tf_path = osp.join(terraform_module_dir, "terraform.tf")
+    with open(terraform_tf_path, "w") as fp:
+        fp.write(
+            dedent(
+                f"""\
+                terraform {{
+                  required_providers {{
+                    aws = {{
+                      source  = "hashicorp/aws"
+                      version = "{aws_provider_version}"
+                    }}
+                  }}
+                }}
+                """
+            )
+        )
+
+
+def cleanup_dot_terraform(terraform_module_dir):
+    state_files = [
+        osp.join(terraform_module_dir, ".terraform"),
+        osp.join(terraform_module_dir, ".terraform.lock.hcl"),
+    ]
+    for state_file in state_files:
+        try:
+            if osp.isdir(state_file):
+                shutil.rmtree(state_file)
+            elif osp.isfile(state_file):
+                remove(state_file)
+        except FileNotFoundError:
+            pass
 
 
 @contextmanager
