@@ -35,12 +35,15 @@ variable "max_session_duration" {
 
 variable "repo_name" {
   description = "Repository name in GitHub. Without the organization part."
+  type        = string
 }
 
 variable "state_bucket" {
   description = "Name of the S3 bucket with the state"
+  type        = string
 }
 
 variable "terraform_locks_table_arn" {
   description = "DynamoDB table that holds Terraform state locks."
+  type        = string
 }
