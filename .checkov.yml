@@ -1,0 +1,10 @@
+framework:
+  - terraform
+
+skip-check:
+  # CKV_TF_1: Module sources use version pins from private registry
+  # Using semantic versioning from registry.infrahouse.com
+  - CKV_TF_1
+
+compact: true
+quiet: false

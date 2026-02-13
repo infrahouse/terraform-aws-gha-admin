@@ -1,18 +1,35 @@
 import sys
+from os import path as osp
 from subprocess import CalledProcessError
 
-from infrahouse_toolkit.terraform import terraform_apply
+import pytest
+from pytest_infrahouse import terraform_apply
 
-from tests.conftest import TRACE_TERRAFORM, TEST_ACCOUNT, LOG
+from tests.conftest import (
+    TRACE_TERRAFORM,
+    TEST_ACCOUNT,
+    LOG,
+    TERRAFORM_ROOT_DIR,
+    update_terraform_tf,
+    cleanup_dot_terraform,
+)
 
 
+@pytest.mark.parametrize(
+    "aws_provider_version",
+    ["~> 5.11", "~> 6.0"],
+    ids=["aws-5", "aws-6"],
+)
 def test_gha_admin(
     ec2_client_map,
+    aws_provider_version,
 ):
-    tf_dir = "test_data/gha-admin"
+    terraform_module_dir = osp.join(TERRAFORM_ROOT_DIR, "gha-admin")
+    cleanup_dot_terraform(terraform_module_dir)
+    update_terraform_tf(terraform_module_dir, aws_provider_version)
     try:
         with terraform_apply(
-            tf_dir,
+            terraform_module_dir,
             json_output=True,
             var_file="terraform.tfvars",
             enable_trace=TRACE_TERRAFORM,
