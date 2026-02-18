@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.6.0] - 2026-02-18
+
+### Bug Fixes
+
+- Harden IAM module security and add input validation
+
+### Documentation
+
+- Add comprehensive documentation, release automation, and module improvements
+
+### Features
+
+- Add AWS Provider v6 support
+
+### Ci
+
+- Add terraform-CI workflow and checkov config
+- Skip expected checkov failures for admin IAM module and test_data
+
 ## [unreleased]
 
 ### Features
