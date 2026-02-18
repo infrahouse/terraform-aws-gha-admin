@@ -7,7 +7,7 @@ Minimal configuration with all three providers pointing to the same account:
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "3.5.1"
+  version = "3.6.0"
   providers = {
     aws          = aws
     aws.cicd     = aws
@@ -48,7 +48,7 @@ provider "aws" {
 
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "3.5.1"
+  version = "3.6.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
@@ -68,7 +68,7 @@ Use a less permissive policy instead of AdministratorAccess:
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "3.5.1"
+  version = "3.6.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
@@ -91,7 +91,7 @@ Allow the GitHub role to assume roles in additional accounts:
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "3.5.1"
+  version = "3.6.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
@@ -117,7 +117,7 @@ For a repository that manages multiple AWS accounts and needs to assume any role
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "3.5.1"
+  version = "3.6.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
@@ -140,7 +140,7 @@ Allow human operators or other automation to also assume the admin and state-man
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "3.5.1"
+  version = "3.6.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
