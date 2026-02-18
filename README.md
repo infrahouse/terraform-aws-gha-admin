@@ -81,7 +81,7 @@ For detailed documentation, visit the
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "3.6.0"
+  version = "3.6.1"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
