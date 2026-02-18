@@ -1,5 +1,5 @@
 resource "aws_iam_role" "admin" {
-  name                 = "ih-tf-${var.repo_name}-admin"
+  name                 = substr("ih-tf-${var.repo_name}-admin", 0, 64)
   description          = "Role to manage AWS account"
   assume_role_policy   = data.aws_iam_policy_document.admin-trust.json
   max_session_duration = var.max_session_duration
