@@ -56,6 +56,11 @@ terraform_locks_table_arn = module.state-bucket.lock_table_arn
 admin_policy_name = "PowerUserAccess"
 ```
 
+!!! warning
+    The default `AdministratorAccess` grants full access to the AWS account.
+    For production environments, consider using a least-privilege policy
+    that only permits the actions your Terraform code actually needs.
+
 ### `allowed_arns`
 
 - **Type**: `list(string)`
