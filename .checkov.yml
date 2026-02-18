@@ -5,6 +5,15 @@ skip-check:
   # CKV_TF_1: Module sources use version pins from private registry
   # Using semantic versioning from registry.infrahouse.com
   - CKV_TF_1
+  # Module creates an admin role with AdministratorAccess by design
+  - CKV_AWS_275
+  # GitHub role uses sts:AssumeRole on * to assume admin/state-manager roles
+  - CKV_AWS_111
+  - CKV_AWS_107
+  - CKV_AWS_356
+
+skip-path:
+  - test_data
 
 compact: true
 quiet: false
