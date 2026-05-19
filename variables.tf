@@ -4,7 +4,10 @@ variable "environment" {
 
   validation {
     condition     = can(regex("^[a-z0-9_]+$", var.environment))
-    error_message = "environment must contain only lowercase letters, numbers, and underscores. Got: ${var.environment}."
+    error_message = <<-EOT
+      environment must contain only lowercase letters, numbers, and underscores.
+      Got: ${var.environment}
+    EOT
   }
 }
 
@@ -50,9 +53,15 @@ variable "trusted_arn_patterns" {
 
   validation {
     condition = alltrue([
-      for p in var.trusted_arn_patterns : can(regex("^arn:aws:iam::[0-9]{12}:", p))
+      for p in var.trusted_arn_patterns :
+      can(regex("^arn:aws:iam::[0-9]{12}:(role|user|assumed-role)/[^*]+", p))
     ])
-    error_message = "Each trusted_arn_patterns entry must start with 'arn:aws:iam::' followed by a 12-digit account ID."
+    error_message = <<-EOT
+      Each trusted_arn_patterns entry must be of the form
+      'arn:aws:iam::<account_id>:(role|user|assumed-role)/<path>' with at least one non-wildcard
+      character in the resource path. Account-wide patterns like ':*' or ':role/*' are not allowed.
+      Got: ${jsonencode(var.trusted_arn_patterns)}
+    EOT
   }
 }
 
@@ -83,13 +92,19 @@ variable "repo_name" {
 }
 
 variable "state_key" {
-  description = "Path to the Terraform state file in the S3 bucket. Passed through to the state-manager sub-module."
+  description = <<-EOT
+    Path to the Terraform state object inside var.state_bucket (matches the backend "key" argument).
+    The state-manager IAM policy is scoped to this path, so the value MUST match the backend config.
+  EOT
   type        = string
   default     = "terraform.tfstate"
 
   validation {
     condition     = can(regex("^[a-zA-Z0-9/_.-]+$", var.state_key))
-    error_message = "state_key must contain only alphanumeric characters, slashes, underscores, dots, and hyphens. Got: ${var.state_key}"
+    error_message = <<-EOT
+      state_key must contain only alphanumeric characters, slashes, underscores, dots, and hyphens.
+      Got: ${var.state_key}
+    EOT
   }
 }
 
