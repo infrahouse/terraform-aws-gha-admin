@@ -104,6 +104,7 @@ module "gha" {
     aws.cicd     = aws.cicd
     aws.tfstates = aws.tfstates
   }
+  environment               = "production"
   gh_org_name               = "my-org"
   repo_name                 = "my-repo"
   state_bucket              = module.state-bucket.bucket_name

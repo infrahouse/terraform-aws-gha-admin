@@ -25,6 +25,22 @@ data "aws_iam_policy_document" "admin-trust" {
       )
     }
   }
+
+  dynamic "statement" {
+    for_each = length(var.trusted_arn_patterns) > 0 ? [1] : []
+    content {
+      actions = ["sts:AssumeRole"]
+      principals {
+        type        = "AWS"
+        identifiers = ["*"]
+      }
+      condition {
+        test     = "StringLike"
+        variable = "aws:PrincipalArn"
+        values   = var.trusted_arn_patterns
+      }
+    }
+  }
 }
 
 data "aws_iam_policy_document" "github-trust" {

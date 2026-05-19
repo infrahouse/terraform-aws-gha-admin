@@ -1,3 +1,13 @@
+variable "environment" {
+  description = "Environment name (e.g., development, staging, production)."
+  type        = string
+
+  validation {
+    condition     = can(regex("^[a-z0-9_]+$", var.environment))
+    error_message = "environment must contain only lowercase letters, numbers, and underscores. Got: ${var.environment}."
+  }
+}
+
 variable "allowed_arns" {
   description = <<-EOT
     A list of ARNs `ih-tf-{var.repo_name}-github` is allowed to assume
@@ -28,6 +38,24 @@ variable "trusted_arns" {
   default     = []
 }
 
+variable "trusted_arn_patterns" {
+  description = <<-EOT
+    ARN patterns (with wildcards) for roles allowed to assume the admin and state-manager roles.
+    Uses StringLike condition on aws:PrincipalArn instead of exact matching.
+    Useful for AWS SSO roles with auto-generated suffixes that change when permission sets are recreated.
+    Each pattern must include an explicit 12-digit AWS account ID.
+  EOT
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition = alltrue([
+      for p in var.trusted_arn_patterns : can(regex("^arn:aws:iam::[0-9]{12}:", p))
+    ])
+    error_message = "Each trusted_arn_patterns entry must start with 'arn:aws:iam::' followed by a 12-digit account ID."
+  }
+}
+
 variable "gh_org_name" {
   description = "GitHub organization name."
   type        = string
@@ -52,6 +80,17 @@ variable "max_session_duration" {
 variable "repo_name" {
   description = "Repository name in GitHub. Without the organization part."
   type        = string
+}
+
+variable "state_key" {
+  description = "Path to the Terraform state file in the S3 bucket. Passed through to the state-manager sub-module."
+  type        = string
+  default     = "terraform.tfstate"
+
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9/_.-]+$", var.state_key))
+    error_message = "state_key must contain only alphanumeric characters, slashes, underscores, dots, and hyphens. Got: ${var.state_key}"
+  }
 }
 
 variable "state_bucket" {

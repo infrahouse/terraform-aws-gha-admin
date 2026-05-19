@@ -13,6 +13,7 @@ module "gha" {
     aws.cicd     = aws
     aws.tfstates = aws
   }
+  environment               = "production"
   gh_org_name               = "my-org"
   repo_name                 = "my-repo"
   state_bucket              = "my-terraform-states"
@@ -54,6 +55,7 @@ module "gha" {
     aws.cicd     = aws.cicd
     aws.tfstates = aws.tfstates
   }
+  environment               = "production"
   gh_org_name               = "my-org"
   repo_name                 = "my-repo"
   state_bucket              = module.state-bucket.bucket_name
@@ -74,6 +76,7 @@ module "gha" {
     aws.cicd     = aws.cicd
     aws.tfstates = aws.tfstates
   }
+  environment               = "production"
   gh_org_name               = "my-org"
   repo_name                 = "my-repo"
   state_bucket              = module.state-bucket.bucket_name
@@ -97,6 +100,7 @@ module "gha" {
     aws.cicd     = aws.cicd
     aws.tfstates = aws.tfstates
   }
+  environment               = "production"
   gh_org_name               = "my-org"
   repo_name                 = "my-repo"
   state_bucket              = module.state-bucket.bucket_name
@@ -123,6 +127,7 @@ module "gha" {
     aws.cicd     = aws.cicd
     aws.tfstates = aws.tfstates
   }
+  environment               = "production"
   gh_org_name               = "my-org"
   repo_name                 = "aws-control"
   state_bucket              = module.state-bucket.bucket_name
@@ -146,6 +151,7 @@ module "gha" {
     aws.cicd     = aws.cicd
     aws.tfstates = aws.tfstates
   }
+  environment               = "production"
   gh_org_name               = "my-org"
   repo_name                 = "my-repo"
   state_bucket              = module.state-bucket.bucket_name
@@ -154,6 +160,57 @@ module "gha" {
   # Allow an admin role from the CI/CD account to also assume these roles
   trusted_arns = [
     "arn:aws:iam::111111111111:role/admin",
+  ]
+}
+```
+
+## Custom State Key
+
+When your backend uses a subdirectory key (e.g., per-environment state files):
+
+```hcl
+module "gha_sandbox" {
+  source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
+  version = "3.6.1"
+  providers = {
+    aws          = aws
+    aws.cicd     = aws.cicd
+    aws.tfstates = aws.tfstates
+  }
+  environment               = "sandbox"
+  gh_org_name               = "my-org"
+  repo_name                 = "my-repo"
+  state_bucket              = module.state-bucket.bucket_name
+  terraform_locks_table_arn = module.state-bucket.lock_table_arn
+
+  # Match the backend key so the state-manager IAM policy allows access
+  state_key = "sandbox/terraform.tfstate"
+}
+```
+
+## AWS SSO Trusted Principals
+
+Use `trusted_arn_patterns` for AWS SSO roles whose ARN suffix changes when the
+permission set is recreated:
+
+```hcl
+module "gha" {
+  source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
+  version = "3.6.1"
+  providers = {
+    aws          = aws
+    aws.cicd     = aws.cicd
+    aws.tfstates = aws.tfstates
+  }
+  environment               = "production"
+  gh_org_name               = "my-org"
+  repo_name                 = "my-repo"
+  state_bucket              = module.state-bucket.bucket_name
+  terraform_locks_table_arn = module.state-bucket.lock_table_arn
+
+  # Wildcard pattern survives SSO permission set recreation
+  trusted_arn_patterns = [
+    "arn:aws:iam::990466748045:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_AWSAdministratorAccess_*",
   ]
 }
 ```

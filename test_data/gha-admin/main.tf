@@ -24,6 +24,7 @@ module "gha" {
     aws.cicd     = aws
     aws.tfstates = aws
   }
+  environment               = var.environment
   gh_org_name               = var.gh_org_name
   repo_name                 = var.repo_name
   state_bucket              = aws_s3_bucket.pytest.bucket

@@ -2,6 +2,16 @@
 
 ## Required Variables
 
+### `environment`
+
+- **Type**: `string`
+- **Description**: Environment name (e.g., `development`, `staging`, `production`).
+  Must contain only lowercase letters, numbers, and underscores.
+
+```hcl
+environment = "production"
+```
+
 ### `gh_org_name`
 
 - **Type**: `string`
@@ -105,6 +115,39 @@ trusted_arns = [
   "arn:aws:iam::CICD_ACCOUNT:role/admin",
 ]
 ```
+
+### `state_key`
+
+- **Type**: `string`
+- **Default**: `"terraform.tfstate"`
+- **Description**: Path to the Terraform state file in the S3 bucket. Passed through to the
+  state-manager sub-module to scope IAM permissions to the correct S3 object path.
+  Set this when your backend uses a subdirectory key.
+
+```hcl
+# For a repo with per-environment state files
+state_key = "sandbox/terraform.tfstate"
+```
+
+### `trusted_arn_patterns`
+
+- **Type**: `list(string)`
+- **Default**: `[]`
+- **Description**: ARN patterns (with wildcards) for roles allowed to assume the admin
+  and state-manager roles. Uses `StringLike` condition on `aws:PrincipalArn` instead of
+  exact matching. Useful for AWS SSO roles whose ARN suffix changes when the permission
+  set is recreated. Each pattern must include an explicit 12-digit AWS account ID.
+
+```hcl
+trusted_arn_patterns = [
+  "arn:aws:iam::990466748045:role/aws-reserved/sso.amazonaws.com/*/AWSReservedSSO_AWSAdministratorAccess_*",
+]
+```
+
+!!! tip
+    Use `trusted_arn_patterns` instead of `trusted_arns` for AWS SSO roles. SSO role ARNs
+    contain an auto-generated suffix that changes whenever the permission set is recreated,
+    which would break exact-match trust policies.
 
 ### `max_session_duration`
 

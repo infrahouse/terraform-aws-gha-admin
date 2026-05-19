@@ -1,3 +1,8 @@
+variable "environment" {
+  description = "Environment name."
+  type        = string
+}
+
 variable "gh_org_name" {
   description = "GitHub organization name."
   type        = string
