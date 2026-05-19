@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0] - 2026-05-19
+
+### Bug Fixes
+
+- Address review findings (C1, S1, I2/I4/I5, M1)
+
+### Documentation
+
+- Add comprehensive documentation, release automation, and module improvements
+
+### Features
+
+- Bump state-manager to 1.5.0, add environment, state_key, trusted_arn_patterns
+
 ## [3.6.0] - 2026-02-18
 
 ### Bug Fixes
