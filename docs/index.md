@@ -28,7 +28,7 @@ CI/CD for Terraform-managed infrastructure:
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "3.6.1"
+  version = "4.0.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
