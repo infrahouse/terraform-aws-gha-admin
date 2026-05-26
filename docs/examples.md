@@ -7,7 +7,7 @@ Minimal configuration with all three providers pointing to the same account:
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "4.0.0"
+  version = "4.1.0"
   providers = {
     aws          = aws
     aws.cicd     = aws
@@ -49,7 +49,7 @@ provider "aws" {
 
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "4.0.0"
+  version = "4.1.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
@@ -70,7 +70,7 @@ Use a less permissive policy instead of AdministratorAccess:
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "4.0.0"
+  version = "4.1.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
@@ -94,7 +94,7 @@ Allow the GitHub role to assume roles in additional accounts:
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "4.0.0"
+  version = "4.1.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
@@ -121,7 +121,7 @@ For a repository that manages multiple AWS accounts and needs to assume any role
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "4.0.0"
+  version = "4.1.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
@@ -145,7 +145,7 @@ Allow human operators or other automation to also assume the admin and state-man
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "4.0.0"
+  version = "4.1.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
@@ -171,7 +171,7 @@ When your backend uses a subdirectory key (e.g., per-environment state files):
 ```hcl
 module "gha_sandbox" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "4.0.0"
+  version = "4.1.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
@@ -196,7 +196,7 @@ permission set is recreated:
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "4.0.0"
+  version = "4.1.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd

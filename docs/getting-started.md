@@ -98,7 +98,7 @@ providers = {
 ```hcl
 module "gha" {
   source  = "registry.infrahouse.com/infrahouse/gha-admin/aws"
-  version = "4.0.0"
+  version = "4.1.0"
   providers = {
     aws          = aws
     aws.cicd     = aws.cicd
