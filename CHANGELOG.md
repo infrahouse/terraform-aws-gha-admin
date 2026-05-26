@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.1.0] - 2026-05-26
+
+### Features
+
+- Add name_prefix variable for multi-environment colocation
+
 ## [4.0.0] - 2026-05-19
 
 ### Bug Fixes
