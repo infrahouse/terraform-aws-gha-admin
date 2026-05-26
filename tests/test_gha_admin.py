@@ -42,6 +42,50 @@ def test_gha_admin(
                 tf_out["github_role_arn"]["value"]
                 == f"arn:aws:iam::{TEST_ACCOUNT}:role/ih-tf-foo-repo-github"
             )
+            assert (
+                tf_out["state_manager_role_arn"]["value"]
+                == f"arn:aws:iam::{TEST_ACCOUNT}:role/ih-tf-foo-repo-state-manager"
+            )
+    except CalledProcessError as err:
+        LOG.error(err)
+        LOG.info("STDOUT: %s", err.stdout)
+        LOG.error("STDERR: %s", err.stderr)
+        if TRACE_TERRAFORM:
+            LOG.info("Check output in files tf-apply-trace.txt, tf-destroy-trace.txt.")
+        sys.exit(1)
+
+
+@pytest.mark.parametrize(
+    "aws_provider_version",
+    ["~> 5.11", "~> 6.0"],
+    ids=["aws-5", "aws-6"],
+)
+def test_gha_admin_name_prefix(
+    ec2_client_map,
+    aws_provider_version,
+):
+    terraform_module_dir = osp.join(TERRAFORM_ROOT_DIR, "gha-admin")
+    cleanup_dot_terraform(terraform_module_dir)
+    update_terraform_tf(terraform_module_dir, aws_provider_version)
+    try:
+        with terraform_apply(
+            terraform_module_dir,
+            json_output=True,
+            var_file="terraform-prefix.tfvars",
+            enable_trace=TRACE_TERRAFORM,
+        ) as tf_out:
+            assert (
+                tf_out["admin_role_arn"]["value"]
+                == f"arn:aws:iam::{TEST_ACCOUNT}:role/ih-tf-staging-foo-repo-admin"
+            )
+            assert (
+                tf_out["github_role_arn"]["value"]
+                == f"arn:aws:iam::{TEST_ACCOUNT}:role/ih-tf-staging-foo-repo-github"
+            )
+            assert (
+                tf_out["state_manager_role_arn"]["value"]
+                == f"arn:aws:iam::{TEST_ACCOUNT}:role/ih-tf-staging-foo-repo-state-manager"
+            )
     except CalledProcessError as err:
         LOG.error(err)
         LOG.info("STDOUT: %s", err.stdout)

@@ -12,7 +12,7 @@ module "state-manager" {
     ],
     var.trusted_arns
   )
-  name                      = substr("ih-tf-${var.repo_name}-state-manager", 0, 64)
+  name                      = "${local.role_basename}-state-manager"
   state_bucket              = var.state_bucket
   state_key                 = var.state_key
   terraform_locks_table_arn = var.terraform_locks_table_arn
