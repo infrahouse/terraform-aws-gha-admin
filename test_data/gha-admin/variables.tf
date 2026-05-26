@@ -8,6 +8,12 @@ variable "gh_org_name" {
   type        = string
 }
 
+variable "name_prefix" {
+  description = "Optional disambiguator for role names."
+  type        = string
+  default     = ""
+}
+
 variable "repo_name" {
   description = "Repository name in GitHub. Without the organization part."
 }

@@ -26,6 +26,7 @@ module "gha" {
   }
   environment               = var.environment
   gh_org_name               = var.gh_org_name
+  name_prefix               = var.name_prefix
   repo_name                 = var.repo_name
   state_bucket              = aws_s3_bucket.pytest.bucket
   terraform_locks_table_arn = aws_dynamodb_table.terraform_locks.arn

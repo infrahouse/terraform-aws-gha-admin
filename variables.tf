@@ -1,3 +1,23 @@
+variable "name_prefix" {
+  description = <<-EOT
+    Optional disambiguator inserted into all role names (admin, github, state-manager).
+    Set this when two environments share an AWS account — most commonly when multiple
+    environments write their state-manager role to the same tfstates account. Leave empty
+    for the single-environment-per-account default; existing role names are preserved.
+    Positioned left of repo_name so it survives truncation to IAM's 64-char limit.
+  EOT
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = var.name_prefix == "" || can(regex("^[a-z0-9_-]+$", var.name_prefix))
+    error_message = <<-EOT
+      name_prefix must be empty or contain only lowercase letters, numbers,
+      hyphens, and underscores. Got: ${var.name_prefix}
+    EOT
+  }
+}
+
 variable "environment" {
   description = "Environment name (e.g., development, staging, production)."
   type        = string
