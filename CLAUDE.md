@@ -45,10 +45,10 @@ The module requires three AWS provider aliases configured in `terraform.tf`:
 | File | Purpose |
 |------|---------|
 | `aws_iam_role.admin.tf` | Admin role + trust policy in principal account |
-| `aws_iam_role.github.tf` | GitHub Actions role + OIDC trust in CI/CD account |
+| `aws_iam_role.github.tf` | GitHub Actions role via `infrahouse/github-role/aws` (OIDC trust), attachments, `moved` block |
 | `policies.tf` | IAM policies for the GitHub role (assume specific roles, or assume all) |
-| `data_sources.tf` | Policy documents and OIDC provider data source |
-| `state-manager.tf` | Invokes `infrahouse/state-manager/aws` v1.3.0 |
+| `data_sources.tf` | Policy documents |
+| `state-manager.tf` | Invokes `infrahouse/state-manager/aws` v1.5.0 |
 | `local.tf` | Common tags |
 | `variables.tf` | All input variables |
 | `outputs.tf` | admin_role_arn, github_role_arn, state_manager_role_arn |
@@ -56,6 +56,10 @@ The module requires three AWS provider aliases configured in `terraform.tf`:
 ### Testing
 
 Tests in `tests/` use `infrahouse_toolkit.terraform.terraform_apply` to deploy real AWS infrastructure into test account `303467602807`. The test fixture in `test_data/gha-admin/` contains a complete Terraform root module that calls this module. Tests assume the role `arn:aws:iam::303467602807:role/gha-admin-tester` via STS.
+
+`test_upgrade_keeps_github_role` uses `test_data/gha-admin-upgrade/`: it applies the module from the registry at
+4.1.0, switches `gha.tf` to this checkout, and asserts the plan creates and destroys nothing. Keep the `moved`
+block in `aws_iam_role.github.tf` for as long as consumers may upgrade from 4.1.0 or earlier.
 
 ### CI/CD workflows (`.github/workflows/`)
 
