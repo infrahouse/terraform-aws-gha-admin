@@ -17,6 +17,9 @@ for secure, credential-less authentication.
 - **Trust**: GitHub OIDC provider, scoped to a specific organization and repository
 - **Permissions**: Can only assume the admin and state-manager roles (plus any `allowed_arns`)
 - **Purpose**: Entry point for GitHub Actions — this is the role the workflow assumes via OIDC
+- **Created by**: the [github-role](https://registry.infrahouse.com/infrahouse/github-role/aws) submodule,
+  which owns the OIDC trust policy. Up to 4.1.0 this module created the role itself; a `moved` block keeps
+  the existing role when you upgrade, so the plan shows it moved and updated in place, not replaced.
 
 ### Admin Role (`ih-tf-{repo}-admin`)
 
@@ -39,7 +42,8 @@ for secure, credential-less authentication.
 2. The workflow calls `sts:AssumeRoleWithWebIdentity` with the token to assume the GitHub role
 3. The GitHub role's trust policy validates:
     - The token comes from the GitHub OIDC provider
-    - The `sub` claim matches the expected organization and repository
+    - The `sub` claim matches the expected organization and repository, in either form GitHub issues:
+      the legacy `repo:<org>/<repo>:*` or the immutable `repo:<org>@<org_id>/<repo>@<repo_id>:*`
 4. With the GitHub role credentials, the workflow assumes:
     - The **state-manager role** to read/write Terraform state
     - The **admin role** to manage AWS resources

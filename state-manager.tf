@@ -8,7 +8,7 @@ module "state-manager" {
   assuming_role_patterns = var.trusted_arn_patterns
   assuming_role_arns = concat(
     [
-      aws_iam_role.github.arn
+      module.github_role.github_role_arn
     ],
     var.trusted_arns
   )

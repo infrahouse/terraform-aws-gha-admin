@@ -77,6 +77,10 @@ GitHub role. Common reasons:
 1. Wrong organization or repository name in the module configuration
 2. The `id-token: write` permission is missing from the workflow
 3. The workflow is running from a fork
+4. The repository gets GitHub's immutable subject claims (`repo:<org>@<org_id>/<repo>@<repo_id>:...`), and the
+   role was created by version 4.1.0 or earlier, which trusts only the legacy `repo:<org>/<repo>:...` form.
+   Immutable claims are mandatory for repositories created, renamed or transferred since 2026-07-15.
+   Check with `gh api repos/<org>/<repo>/actions/oidc/customization/sub`.
 
 **Fix**:
 
@@ -88,6 +92,7 @@ GitHub role. Common reasons:
      contents: read
    ```
 3. OIDC authentication does not work from forked repositories by default
+4. Upgrade the module: later versions trust both forms of the subject claim
 
 ### Error: Not authorized to perform sts:AssumeRole
 

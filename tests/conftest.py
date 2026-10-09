@@ -2,6 +2,7 @@ import logging
 import shutil
 from contextlib import contextmanager
 from os import path as osp, remove
+from typing import Optional
 
 from textwrap import dedent
 
@@ -46,6 +47,70 @@ def update_terraform_tf(terraform_module_dir, aws_provider_version):
                 """
             )
         )
+
+
+def write_gha_module(
+    terraform_module_dir: str, source: str, version: Optional[str] = None
+) -> None:
+    """
+    Write gha.tf with the ``module "gha"`` block that the upgrade test switches between versions.
+
+    :param terraform_module_dir: Directory of the test root module.
+    :param source: Module source: a registry address or a local path.
+    :param version: Exact module version for a registry source. None for a local path.
+    """
+    # Laid out the way terraform fmt would, so that make lint passes after a local test run.
+    source_lines = (
+        f'source  = "{source}"\n                  version = "{version}"'
+        if version
+        else f'source = "{source}"'
+    )
+    with open(osp.join(terraform_module_dir, "gha.tf"), "w") as fp:
+        fp.write(
+            dedent(
+                f"""\
+                module "gha" {{
+                  {source_lines}
+                  providers = {{
+                    aws          = aws
+                    aws.cicd     = aws
+                    aws.tfstates = aws
+                  }}
+                  environment               = var.environment
+                  gh_org_name               = var.gh_org_name
+                  repo_name                 = var.repo_name
+                  state_bucket              = aws_s3_bucket.pytest.bucket
+                  terraform_locks_table_arn = aws_dynamodb_table.terraform_locks.arn
+                }}
+                """
+            )
+        )
+
+
+def assert_github_trust(
+    iam_client, role_name: str, gh_org_name: str, repo_name: str
+) -> None:
+    """
+    Check that the GitHub role trusts both forms of the repository's OIDC subject claim:
+    the legacy ``repo:org/repo:*`` and the immutable ``repo:org@<id>/repo@<id>:*``.
+
+    :param iam_client: boto3 IAM client.
+    :param role_name: Name of the GitHub role.
+    :param gh_org_name: GitHub organization name.
+    :param repo_name: Repository name.
+    """
+    statement = iam_client.get_role(RoleName=role_name)["Role"][
+        "AssumeRolePolicyDocument"
+    ]["Statement"][0]
+    subjects = statement["Condition"]["StringLike"][
+        "token.actions.githubusercontent.com:sub"
+    ]
+    assert sorted(subjects) == sorted(
+        [
+            f"repo:{gh_org_name}/{repo_name}:*",
+            f"repo:{gh_org_name}@*/{repo_name}@*:*",
+        ]
+    )
 
 
 def cleanup_dot_terraform(terraform_module_dir):

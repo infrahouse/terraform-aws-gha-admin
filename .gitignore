@@ -11,3 +11,8 @@ __pycache__
 
 /.claude/*.local.json
 /.claude/reviews/
+
+# Written by the tests
+/test_data/*/terraform.tf
+/test_data/gha-admin-upgrade/gha.tf
+/test_data/gha-admin-upgrade/upgrade.tfplan
