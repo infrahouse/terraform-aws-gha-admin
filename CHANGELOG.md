@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.2.0] - 2026-10-09
+
+### Bug Fixes
+
+- Create the GitHub role with the github-role module
+
 ## [4.1.0] - 2026-05-26
 
 ### Features
