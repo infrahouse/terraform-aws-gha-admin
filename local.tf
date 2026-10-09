@@ -1,5 +1,5 @@
 locals {
-  module_version = "4.1.0"
+  module_version = "4.2.0"
   tags = {
     environment       = var.environment
     created_by_module = "infrahouse/gha-admin/aws"
